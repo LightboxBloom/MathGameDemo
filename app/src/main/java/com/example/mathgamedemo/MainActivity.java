@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        for(int i=0; i<buttons.length; i++)        //initializing textViews
+        for(int i=0; i<buttons.length; i++)        //initializing Buttons
         {
             String textViewID = "button" + (i+1);
 
@@ -63,13 +63,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int resID = getResources().getIdentifier(textViewID, "id", getPackageName());
             textViews[i] = findViewById(resID);
         }
-        sumType();
-        textViews[5].setText("Current Level: " + currentLevel);
+        sumType();                                                  //sets the plus or minus signs and sets the correctAns value
+        textViews[5].setText("Current Level: " + currentLevel);     //displays current level
     }
 
     public static void sumType(){
-        valueNum();
+        valueNum();                                                 //sets values of the symbols
 
+
+        //picks a random order of plus or minus signs
         Collections.shuffle(oneToThree);
         if(oneToThree.get(0) == 1){
             textViews[3].setText("-");
@@ -89,15 +91,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static void valueNum(){
-        //1st
+        //1st symbol value
         Collections.shuffle(fourToTen);
         firstNum = fourToTen.get(0);
         textViews[0].setText(String.valueOf(firstNum));
-        //2nd
+        //2nd symbol value
         Collections.shuffle(oneToFour);
         secondNum = oneToFour.get(0);
         textViews[1].setText(String.valueOf(secondNum));
-        //3rd
+        //3rd symbol value
         thirdNum = oneToFour.get(1);
         textViews[2].setText(String.valueOf(thirdNum));
     }
@@ -111,15 +113,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.button1:
 
-                if(editTextNumber.getText().toString().isEmpty())
+                if(editTextNumber.getText().toString().isEmpty())                //checks if user has entered an answer
                 {
                     Toast.makeText(this, "Please enter your answer first", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
+                    //sets user answer to the value they entered in the editTextNumber
                     Integer userAns =
                             Integer.parseInt(String.valueOf(editTextNumber.getText()));
 
+                    //checks if users answer is correct or not
                     if (userAns != correctAns)
                     {
                         Toast.makeText(this, "Incorrect, Please try again", Toast.LENGTH_SHORT).show();
@@ -127,17 +131,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else
                     {
                         Toast.makeText(this, "Correct, Try this next sum!", Toast.LENGTH_SHORT).show();
-                        currentLevel++;
-                        textViews[5].setText("Current Level: " + currentLevel);
-                        sumType();
+                        currentLevel++;                                                 //increase user level
+                        textViews[5].setText("Current Level: " + currentLevel);         //display new user level
+                        sumType();                                                      //generate new sum to be answered
                     }
-                    editTextNumber.getText().clear();
+                    editTextNumber.getText().clear();                                   //clears the users answer for convenience
                 }
 
                 break;
 
             case R.id.button2:
-                sumType();
+                sumType();          //generates a new sum for the user
                 break;
         }
     }
