@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static int correctAns;
 
-    public static int currentLevel = 1;
+    public static int levelNumber = -100;
 
     public static boolean minPlus = false;
     public static boolean plusPlus = false;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true); //Firebase functionality works when offline, online is required for first launch to retrieve data
 
         for(int i=0; i<buttons.length; i++)        //initializing Buttons
         {
@@ -63,13 +67,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int resID = getResources().getIdentifier(textViewID, "id", getPackageName());
             textViews[i] = findViewById(resID);
         }
-        sumType();                                                  //sets the plus or minus signs and sets the correctAns value
-        textViews[5].setText("Current Level: " + currentLevel);     //displays current level
+        FirebaseHandler.getSetUserLevel();
+        //sumType();                                                  //sets the plus or minus signs and sets the correctAns value
+        //textViews[5].setText("Current Level: " + levelNumber);     //displays current level
     }
 
     public static void sumType(){
         valueNum();                                                 //sets values of the symbols
 
+        textViews[5].setText("Current Level: " + levelNumber);     //displays current level
 
         //picks a random order of plus or minus signs
         Collections.shuffle(oneToThree);
@@ -131,8 +137,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else
                     {
                         Toast.makeText(this, "Correct, Try this next sum!", Toast.LENGTH_SHORT).show();
-                        currentLevel++;                                                 //increase user level
-                        textViews[5].setText("Current Level: " + currentLevel);         //display new user level
+                        levelNumber++;                                                 //increase user level
+                        FirebaseHandler.getSetUserLevel();
+                        textViews[5].setText("Current Level: " + levelNumber);         //display new user level
                         sumType();                                                      //generate new sum to be answered
                     }
                     editTextNumber.getText().clear();                                   //clears the users answer for convenience
